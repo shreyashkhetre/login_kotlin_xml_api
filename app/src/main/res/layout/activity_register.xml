@@ -1,34 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:background="#ECEFF1"
+    android:padding="24dp">
 
+    <!-- Top Register Heading -->
+    <TextView
+        android:id="@+id/registerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#1E1E1E"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Name Input -->
     <EditText
         android:id="@+id/nameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"/>
+        android:hint="Enter your name"
+        android:padding="14dp"
+        android:background="@drawable/edittext_background"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Email Input -->
     <EditText
         android:id="@+id/emailInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"/>
+        android:hint="Enter your email"
+        android:inputType="textEmailAddress"
+        android:padding="14dp"
+        android:background="@drawable/edittext_background"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp" />
 
+    <!-- Register Button -->
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register" />
+        android:text="Register"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:padding="14dp"
+        android:layout_marginBottom="24dp" />
 
+    <!-- Login Link -->
     <TextView
         android:id="@+id/loginLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account? Login"
-        android:paddingTop="8dp"/>
-</LinearLayout>
+        android:textSize="14sp"
+        android:textColor="#3F51B5"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="4dp" />
 
+</LinearLayout>

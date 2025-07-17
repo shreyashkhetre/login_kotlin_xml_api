@@ -4,25 +4,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.login_api.API_Modul.User
+import com.example.login_api.Helper.SharedPrefManager
+import com.example.login_api.R
+import com.example.login_api.Retrofit.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.example.login_api.API_Modul.User
-import com.example.login_api.R
-import com.example.login_api.Retrofit.ApiClient
-
 
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var emailInput: EditText
     private lateinit var loginBtn: Button
     private lateinit var registerLink: TextView
-
+    private lateinit var sharedPrefManager: SharedPrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        sharedPrefManager = SharedPrefManager(this)
 
+        // Already logged in? Go to main screen
+        if (sharedPrefManager.isLoggedIn()) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
 
         emailInput = findViewById(R.id.emailInput)
         loginBtn = findViewById(R.id.loginBtn)
@@ -30,7 +38,11 @@ class LoginActivity : AppCompatActivity() {
 
         loginBtn.setOnClickListener {
             val email = emailInput.text.toString().trim()
-            if (email.isNotEmpty()) loginUser(email)
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
+            } else {
+                loginUser(email)
+            }
         }
 
         registerLink.setOnClickListener {
@@ -43,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 val user = response.body()?.find { it.email.equals(email, true) }
                 if (user != null) {
-
+                    sharedPrefManager.saveLogin(user.email)
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {

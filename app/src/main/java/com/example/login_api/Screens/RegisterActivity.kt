@@ -5,24 +5,26 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.login_api.API_Modul.User
+import com.example.login_api.Helper.SharedPrefManager
 import com.example.login_api.R
 import com.example.login_api.Retrofit.ApiClient
-
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
+
     private lateinit var emailInput: EditText
     private lateinit var nameInput: EditText
     private lateinit var registerBtn: Button
     private lateinit var loginLink: TextView
-
+    private lateinit var sharedPrefManager: SharedPrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        sharedPrefManager = SharedPrefManager(this)
 
         emailInput = findViewById(R.id.emailInput)
         nameInput = findViewById(R.id.nameInput)
@@ -34,28 +36,24 @@ class RegisterActivity : AppCompatActivity() {
             val name = nameInput.text.toString().trim()
 
             // Validation
-            if (name.isEmpty()) {
-                nameInput.error = "Please enter your name"
-                nameInput.requestFocus()
-                return@setOnClickListener
+            when {
+                name.isEmpty() -> {
+                    nameInput.error = "Please enter your name"
+                    nameInput.requestFocus()
+                }
+                email.isEmpty() -> {
+                    emailInput.error = "Please enter your email"
+                    emailInput.requestFocus()
+                }
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                    emailInput.error = "Enter a valid email address"
+                    emailInput.requestFocus()
+                }
+                else -> {
+                    registerUser(name, email)
+                }
             }
-
-            if (email.isEmpty()) {
-                emailInput.error = "Please enter your email"
-                emailInput.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                emailInput.error = "Enter a valid email address"
-                emailInput.requestFocus()
-                return@setOnClickListener
-            }
-
-
-            registerUser(name, email)
         }
-
 
         loginLink.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -67,9 +65,13 @@ class RegisterActivity : AppCompatActivity() {
 
         ApiClient.instance.registerUser(newUser).enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (response.isSuccessful) {
-
+                if (response.isSuccessful && response.body() != null) {
                     Toast.makeText(this@RegisterActivity, "Registered!", Toast.LENGTH_SHORT).show()
+
+                    // Save login status
+                    sharedPrefManager.saveLogin(email)
+
+                    // Go to MainActivity
                     startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
                     finish()
                 } else {
