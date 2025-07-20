@@ -39,7 +39,8 @@ class LoginActivity : AppCompatActivity() {
         loginBtn.setOnClickListener {
             val email = emailInput.text.toString().trim()
             if (email.isEmpty()) {
-                Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
+                emailInput.error = "Please enter your email"
+                emailInput.requestFocus()
             } else {
                 loginUser(email)
             }

@@ -35,7 +35,7 @@ class RegisterActivity : AppCompatActivity() {
             val email = emailInput.text.toString().trim()
             val name = nameInput.text.toString().trim()
 
-            // Validation
+
             when {
                 name.isEmpty() -> {
                     nameInput.error = "Please enter your name"
@@ -68,10 +68,9 @@ class RegisterActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     Toast.makeText(this@RegisterActivity, "Registered!", Toast.LENGTH_SHORT).show()
 
-                    // Save login status
+
                     sharedPrefManager.saveLogin(email)
 
-                    // Go to MainActivity
                     startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
                     finish()
                 } else {
